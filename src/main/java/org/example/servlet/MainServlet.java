@@ -1,7 +1,7 @@
 package org.example.servlet;
 
-import org.example.model.FileElement;
-import org.example.service.AccountService;
+import org.example.dataset.UserDataSet;
+import org.example.service.DBService;
 import org.example.service.FileService;
 import org.example.service.PathUtility;
 
@@ -18,6 +18,8 @@ import java.util.Date;
 
 @WebServlet("/files")
 public class MainServlet extends HttpServlet {
+    private static final DBService dbService = new DBService();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -25,7 +27,9 @@ public class MainServlet extends HttpServlet {
         String login = (String) req.getSession().getAttribute("login");
         String pass = (String) req.getSession().getAttribute("pass");
 
-        if (AccountService.getUserByLogin(login) == null || !AccountService.getUserByLogin(login).getPassword().equals(pass)) {
+        UserDataSet data = dbService.getUserByLogin(login);
+
+        if (data == null || !data.getPassword().equals(pass)) {
             String currentURL = req.getRequestURL().toString();
             resp.sendRedirect(PathUtility.createRedirectUrl(currentURL, "/log"));
             return;

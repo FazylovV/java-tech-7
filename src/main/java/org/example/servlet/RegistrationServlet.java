@@ -1,7 +1,7 @@
 package org.example.servlet;
 
 import org.example.model.User;
-import org.example.service.AccountService;
+import org.example.service.DBService;
 import org.example.service.PathUtility;
 
 import javax.servlet.ServletException;
@@ -14,6 +14,7 @@ import java.io.IOException;
 
 @WebServlet(urlPatterns = {"/registration"})
 public class RegistrationServlet extends HttpServlet {
+    private static final DBService dbService = new DBService();
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -33,8 +34,8 @@ public class RegistrationServlet extends HttpServlet {
         }
 
         User data = new User(login, pass, email);
-        if (AccountService.getUserByLogin(login) == null) {
-            AccountService.addNewUser(data);
+        if (dbService.getUserByLogin(login) == null) {
+            dbService.addUser(data);
 
             req.getSession().setAttribute("login", login);
             req.getSession().setAttribute("pass", pass);
